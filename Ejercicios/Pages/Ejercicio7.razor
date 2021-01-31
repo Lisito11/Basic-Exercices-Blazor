@@ -1,0 +1,89 @@
+﻿@page "/ejercicio7"
+@using System.ComponentModel.DataAnnotations;
+
+<EditForm Model=@nota OnValidSubmit=@FormSubmitted>
+    <DataAnnotationsValidator />
+    <div class="form-row">
+        <div class="col">
+            <InputText @bind-Value=nota.Calificacion placeholder="Ingresa una calificación" class="form-control" />
+        </div>
+        <div class="col">
+            <input type="submit" value="Aceptar" class="btn btn-primary" />
+            <input type="submit" @onclick="@Clear" value="Reiniciar" class="btn btn-info" />
+        </div>
+    </div>
+</EditForm>
+<br />
+<br />
+@if (validacion) {
+    <div>
+        <h5>Tu calificación es: <b>@resultado</b></h5>
+        <h5>Y la distribución de la calificación es: <b>@distribucion[0]</b> <b>@distribucion[1]</b> <b>@distribucion[2]</b></h5>
+    </div>
+}
+
+@code {
+
+
+
+
+    class Nota {
+        [Required]
+        [Range(0,100)]
+        public string Calificacion { get; set; }
+    }
+
+    Nota nota;
+
+    protected override void OnInitialized() {
+        nota = new Nota();
+    }
+
+    bool validacion = false;
+    string calificacion;
+    string resultado;
+    int[] distribucion;
+    int num1, num2, num3;
+
+
+
+    public void FormSubmitted() {
+        calificacion = nota.Calificacion;
+        distribucion = GetResult(int.Parse(calificacion));
+        validacion = true;
+        nota.Calificacion = "";
+    }
+
+    public void Clear() {
+        validacion = false;
+    }
+
+    public int[] GetResult(int nota) {
+        int[] distribucion;
+        if (nota >= 90) {
+            resultado = $"A";
+            return distribucion = CalcularDistribucion(nota);
+        } else if (nota >= 80) {
+            resultado = $"B";
+            return distribucion = CalcularDistribucion(nota);
+        } else if (nota >= 70) {
+            resultado = $"C";
+            return distribucion = CalcularDistribucion(nota);
+        } else {
+            resultado = $"F";
+            return distribucion = CalcularDistribucion(nota);
+        }
+
+    }
+
+    public int[] CalcularDistribucion(int numero) {
+        num1 = (40 * numero) / 100;
+        num2 = (30 * numero) / 100;
+        num3 = (30 * numero) / 100;
+        int[] numeros = { num1, num2, num3 };
+        return numeros;
+    }
+
+
+
+}

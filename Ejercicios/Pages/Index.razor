@@ -1,0 +1,40 @@
+﻿@page "/"
+<h1>Tarea 2</h1>
+<br />
+@foreach (var ejercicio in Ejercicios) {
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@ejercicio.Titulo</h5>
+                    <p class="card-text">
+                        @ejercicio.Body
+                    </p>
+                    <NavLink href="@ejercicio.Link" class="btn btn-primary">Ingresar</NavLink>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+    List<Ejercicio> Ejercicios;
+    protected override void OnInitialized() {
+        Ejercicios = new List<Ejercicio>(){ new Ejercicio()
+        { Titulo = "Ejercicio 1", Body = "Programa que acepte una frase u oración, luego muestre la cantidad de vocales, espacios y consonantes que tiene la misma.", Link = "ejercicio1" },
+        new Ejercicio() { Titulo = "Ejercicio 2", Body = "Programa que muestre todos los datos de un usuario de random users: https://randomuser.me/api/?results=1.", Link = "ejercicio2" },
+        new Ejercicio() { Titulo = "Ejercicio 3", Body = "Programa que acepte un numero de una cedula dominicana y determine si es valida. (sin usar api).", Link = "ejercicio3" },
+        new Ejercicio() { Titulo = "Ejercicio 4", Body = "Programa que acepte las medidas de los lados de un triangulo determine el tipo de triangulo según sus lados.", Link = "ejercicio4" },
+        new Ejercicio() { Titulo = "Ejercicio 5", Body = "Programa que acepte un numero del 1 al 100000, mostrarlo en letras. Ejemplo 90 => noventa. (En español)", Link = "ejercicio5" },
+        new Ejercicio() { Titulo = "Ejercicio 6", Body = "Realiza un programa que acepte una URL, determine la cantidad de párrafos e imágenes que contienen estas.", Link = "ejercicio6" },
+        new Ejercicio() { Titulo = "Ejercicio 7", Body = "Programa que acepte una calificación (0 a 100), calcule el equivalente literal de la misma y una posible distribución para el siguiente esquema: 40, 30, 30.", Link = "ejercicio7" },
+        };
+    }
+
+    class Ejercicio {
+        public string Titulo { get; set; }
+        public string Body { get; set; }
+        public string Link { get; set; }
+    }
+
+}

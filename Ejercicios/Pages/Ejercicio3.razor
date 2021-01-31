@@ -1,0 +1,67 @@
+﻿@page "/ejercicio3"
+@using System.ComponentModel.DataAnnotations;
+
+<EditForm Model=@cedula OnValidSubmit=@FormSubmitted>
+    <DataAnnotationsValidator />
+    <div class="form-row">
+        <div class="col">
+            <InputText @bind-Value=cedula.Dni placeholder="Ingrese la Cédula o DNI" class="form-control" />
+        </div>
+        <div class="col">
+            <input type="submit" value="Aceptar" class="btn btn-primary" />
+            <input type="submit" @onclick="@Clear" value="Reiniciar" class="btn btn-info" />
+        </div>
+    </div>
+</EditForm>
+
+@if (!validacion && !validacion2) { } 
+ else if (validacion) {
+    <div>
+        <text class="@cedula.Status">@respuesta</text>
+    </div>
+ } 
+ else if (!validacion) {
+    <div>
+        <text class="@cedula.Status">@respuesta</text>
+    </div>
+ }
+
+
+
+@code {
+    class Cedula {
+        [Required]
+        public string Dni { get; set; }
+        public string Status { get; set; }
+    }
+
+    Cedula cedula;
+    bool validacion = false;
+    bool validacion2 = true;
+    string respuesta;
+
+    protected override void OnInitialized() {
+        cedula = new Cedula();
+    }
+
+
+    public void FormSubmitted(EditContext context) {
+        validacion = ValidarCedula(cedula.Dni.ToCharArray());
+        if (validacion) {
+            respuesta = $"La cédula {cedula.Dni} es CORRECTA!";
+            cedula.Status = "text-success";
+        } else {
+            respuesta = $"No es una cédula {cedula.Dni} es VALIDA!";
+            cedula.Status = "text-danger";
+        }
+        cedula.Dni = "";
+
+    }
+
+    public void Clear() {
+        validacion = false;
+        validacion2 = false;
+    }
+
+
+}

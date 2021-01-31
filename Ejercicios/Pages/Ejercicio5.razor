@@ -1,0 +1,52 @@
+﻿@page "/ejercicio5"
+@using System.ComponentModel.DataAnnotations;
+<EditForm Model=@num OnValidSubmit=@FormSubmitted>
+    <DataAnnotationsValidator />
+    <div class="form-row">
+        <div class="col">
+            <InputText @bind-Value=num.Num placeholder="Ingresa un numero" class="form-control" />
+        </div>
+        <div class="col">
+            <input type="submit" value="Aceptar" class="btn btn-primary" />
+            <input type="submit" @onclick="@Clear" value="Reiniciar" class="btn btn-info" />
+        </div>
+    </div>
+</EditForm>
+<br />
+<br />
+@if (validacion) {
+    <div>
+        <h5>El número <b>@numero</b> en letras es: <b>@numeroToString</b></h5>
+    </div>
+}
+
+@code {
+    class Numero {
+        [Required]
+        [Range(0, 100000)]
+        public string Num { get; set; }
+    }
+
+    Numero num;
+    string numero;
+    string numeroToString;
+    protected override void OnInitialized() {
+        num = new Numero();
+    }
+
+    bool validacion = false;
+
+    public void Clear() {
+        validacion = false;
+    }
+
+
+    public void FormSubmitted() {
+        numero = num.Num;
+        numeroToString = GetLetras(numero);
+        validacion = true;
+        num.Num = "";
+    }
+
+
+}

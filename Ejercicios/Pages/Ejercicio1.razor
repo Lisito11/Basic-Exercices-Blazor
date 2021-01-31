@@ -1,0 +1,90 @@
+﻿@page "/ejercicio1"
+@using System.ComponentModel.DataAnnotations;
+
+@*Formulario*@
+<EditForm Model=@enunciado OnValidSubmit=@FormSubmitted>
+    <DataAnnotationsValidator />
+    <div class="form-row">
+        <div class="col">
+            <InputText @bind-Value=enunciado.Body placeholder="Ingrese una oracion o frase" class="form-control" />
+        </div>
+        <div class="col">
+            <input type="submit" value="Aceptar" class="btn btn-primary" />
+            <input type="submit" @onclick="@Clear" value="Reiniciar" class="btn btn-info" />
+        </div>
+    </div>
+</EditForm>
+
+@if (result) {
+    <br />
+    <div>
+        <h5>
+            La oración <b><i>"@oracion"</i></b> contiene:
+        </h5>
+        <h5>
+            <b>Vocales:</b>  @rs[0]
+        </h5>
+        <h5>
+            <b> Consonantes:</b> @rs[1]
+        </h5>
+        <h5>
+            <b> Espacios:</b> @rs[2]
+        </h5>
+    </div>
+}
+
+
+@code {
+
+    bool result = false;
+    string oracion;
+    List<int> rs;
+    class Enunciado {
+        [Required(ErrorMessage = "Debe de ingresar una oracion o frase")]
+        public string Body { get; set; }
+        public List<int> Resultados { get; set; }
+    }
+
+    Enunciado enunciado = new Enunciado();
+
+    private void FormSubmitted(EditContext context) {
+        if (context.Validate()) {
+            result = true;
+            rs = enunciado.Resultados = Result(enunciado.Body);
+            oracion = enunciado.Body;
+            enunciado.Body = "";
+        }
+
+    }
+
+    private void Clear() {
+        result = false;
+    }
+
+    static List<int> Result(string oracion) {
+        string[] arrVocales = { "a", "e", "i", "o", "u", "A", "E", "I", "O", "U" };
+        char[] caracteres;
+        caracteres = oracion.ToCharArray();
+        int vocales = 0;
+        int consonantes = 0;
+        int espacios = 0;
+
+        foreach (char caracter in caracteres) {
+            if (!Char.IsDigit(caracter) && !Char.IsSymbol(caracter)) {
+                if (Char.IsWhiteSpace(caracter)) {
+                    espacios++;
+                } else if (arrVocales.Contains(caracter.ToString())) {
+                    vocales++;
+                } else if (Char.IsLetter(caracter)) {
+                    consonantes++;
+                }
+            }
+        }
+
+        List<int> resultados = new List<int>() { vocales, consonantes, espacios };
+
+        return resultados;
+    }
+
+ 
+}

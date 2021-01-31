@@ -1,0 +1,93 @@
+﻿@page "/ejercicio6"
+@using System.ComponentModel.DataAnnotations;
+@using System.IO;
+@using System.Net;
+@using System.Text;
+@inject HttpClient Http
+
+<EditForm Model=@url OnValidSubmit=@FormSubmitted>
+    <DataAnnotationsValidator />
+    <div class="form-row">
+        <div class="col">
+            <InputText @bind-Value=url.Body placeholder="Ingrese una URL" class="form-control" />
+        </div>
+        <div class="col">
+            <input type="submit" value="Aceptar" class="btn btn-primary" />
+            <input type="submit" @onclick="@Clear" value="Reiniciar" class="btn btn-info" />
+        </div>
+    </div>
+</EditForm>
+
+
+@if (!String.IsNullOrEmpty(imgs) && !String.IsNullOrEmpty(parrafos) && validacion) {
+    <div>
+        <h5>
+            En la la URL <b>@urlbody</b> hay:
+        </h5>
+        <h5>
+            <b>Imagenes: </b>@imgs
+
+        </h5>
+        <h5>
+            <b>Párrafos: </b>@parrafos
+        </h5>
+    </div>
+
+} else if (String.IsNullOrEmpty(imgs) && String.IsNullOrEmpty(parrafos) && validacion) {
+    <div><h5>Cargando...</h5></div>
+} else { }
+
+
+
+@code {
+
+
+
+    class Url {
+        [Required]
+        public string Body { get; set; }
+    }
+
+    Url url;
+
+    protected override void OnInitialized() {
+        url = new Url();
+    }
+
+
+    bool validacion = false;
+    string content;
+    string urlbody;
+    string imgs;
+    string parrafos;
+
+    public async Task FormSubmitted(EditContext context) {
+        urlbody = url.Body;
+        Console.WriteLine(content);
+        await GetEtiquetas(url.Body);
+        validacion = true;
+        url.Body = "";
+
+    }
+
+    public void Clear() {
+        validacion = false;
+    }
+
+    private async Task GetEtiquetas(string url) {
+
+        var content = await Http.GetStringAsync(url);
+        StateHasChanged();
+
+        HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+
+        document.LoadHtml(content);
+
+        imgs = document.DocumentNode.QuerySelectorAll("img").Distinct().Count().ToString();
+
+        parrafos = document.DocumentNode.QuerySelectorAll("p").Distinct().Count().ToString();
+
+    }
+
+
+}
